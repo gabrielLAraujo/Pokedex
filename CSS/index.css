@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+body{
+    background-image: linear-gradient(to right top, #ffffff, #ddd0ff, #c29fff, #ae69fa, #9f12eb);
+}
+.section{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: stretch;
+    justify-content: space-between;
+    align-items: center;
+}
+.card{
+    border: solid grey thin;
+    border-radius: 20%;
+    margin: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pokemon_name{
+    font-size:xx-large;
+}
+#searchBar{
+    width: 98%;
+}
+#container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+#searchInput{
+    width: 100%;
+    height: 3ch;
+    border-radius: 1ch;
+    border: solid grey thin;
+}
+.pokemon_image{
+    width: 80%;
+}
+.pokemon_moves{
+    padding: 5%;
+    margin: 5%;
+}
