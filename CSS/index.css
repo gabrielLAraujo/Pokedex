@@ -1,20 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
 *{
     font-family: 'Montserrat', sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-bar-color) var(--scroll-bar-bg-color);
 }
 body{
     background-image: linear-gradient(to right top, #ffffff, #ddd0ff, #c29fff, #ae69fa, #9f12eb);
 }
+
 .section{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-content: stretch;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 .card{
-    border: solid grey thin;
+    border: solid white thin;
     border-radius: 20%;
     margin: 1%;
     display: flex;
@@ -23,6 +26,57 @@ body{
 }
 .pokemon_name{
     font-size:xx-large;
+}
+.pokemon_image{
+    width: 65%;
+}
+.pokemon_img_div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: baseline;
+}
+.pokemon_moves{
+    padding: 5%;
+    margin: 5%;
+}
+.pokemon_move{
+    margin: 1ch;
+    float: left;
+    width: 40%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: space-around;
+
+}
+.pokemon_img_stats{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-content: stretch;
+}
+.pokemon_stats{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: stretch;
+    width: 35%;
+    align-items: stretch;
+    justify-content: center;
+}
+.pagination{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: stretch;
+    justify-content: center;
+    align-items: center;
+}
+.pagination_items{
+    margin: 1ch;
 }
 #searchBar{
     width: 98%;
@@ -36,12 +90,31 @@ body{
     width: 100%;
     height: 3ch;
     border-radius: 1ch;
-    border: solid grey thin;
+    border: solid white thin;
+    color: white;
+    background: url(/ICONS/search_white_24dp.svg) no-repeat  0.5ch;
+    padding-left:30px;
+
 }
-.pokemon_image{
-    width: 80%;
-}
-.pokemon_moves{
-    padding: 5%;
-    margin: 5%;
-}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; 
+  }
+::-webkit-scrollbar-corner { background: rgba(0,0,0,0.5); }
+
+  /* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+  }
+
+*::-webkit-scrollbar-track {
+      background: var(--scroll-bar-bg-color);
+  }
+
+*::-webkit-scrollbar-thumb {
+      background-color: var(--scroll-bar-color);
+      border-radius: 20px;
+      border: 3px solid var(--scroll-bar-bg-color);
+  }
