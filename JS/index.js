@@ -5,45 +5,54 @@ let searchInput = document.getElementById('searchInput');
 let pokedex = document.getElementById('pokedex');
 let nextPageBtn = document.getElementById('next_page');
 let backPageBtn = document.getElementById('back_page');
+let promisses = [];
+let allPokemons = [];
+const getUrl = id => `https://pokeapi.co/api/v2/pokemon/${id}`;
 window.addEventListener('load', (event) => {
-    // let generations = ['i', 'ii', 'iii', 'iV', 'v', 'vi', 'vii', 'viii'];
     paginationDiv.textContent = page;
+    createPromisses();
     let pokemons = fetchPokemon(page)
     console.log('The page has fully loaded');
     initEvents()
 });
 
-
-const fetchPokemon = (page) => {
-    let pokemons = [];
-    console.log(offset, page)
-    for (let i = offset; i < 5 * page; i++) {
-        fetch(`https://pokeapi.co/api/v2/pokemon/${i}`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then(pokemon => {
-
-                let moves = getFourRandomMoves(pokemon),
-                    cardDiv = document.createElement('div'),
-                    html = createHtmlMoves(pokemon, moves);
-
-                cardDiv.innerHTML = html;
-                cardDiv.classList.add('card');
-                pokedex.append(cardDiv);
-                pokemon['htmlCard'] = cardDiv;
-                pokemons.push(pokemon);
-
-            })
+const createPromisses = () => {
+    let i = offset > 0 ? offset : 1;
+    let pageCount = page == 1 ? page * 5 : page * 5 - 1
+    for (i; i < pageCount; i++) {
+        promisses.push(fetch(getUrl(i)).then(response => response.json()))
     }
+}
+const fetchPokemon = (page) => {
+
+    Promise.all(promisses).then(pokemons => {
+        pokemons.forEach(pokemon => {
+            let moves = getFourRandomMoves(pokemon),
+                html = createHtmlCard(pokemon, moves),
+                cardDiv = createCardDiv(html, pokemon.types[0].type.name);
+
+
+            pokemon['htmlCard'] = cardDiv;
+            allPokemons.push(pokemon);
+        })
+    })
+}
+
+const createCardDiv = (html, type) => {
+    let cardDiv = document.createElement('div');
+    cardDiv.innerHTML = html;
+    cardDiv.classList.add('card');
+    cardDiv.classList.add(type);
+    pokedex.append(cardDiv);
+    return cardDiv;
 }
 const initEvents = () => {
     searchInput.addEventListener('input', (e) => {
-        for (let i = 0; i < pokemons.length; i++) {
-            if (pokemons[i].name.indexOf(e.target.value) == -1) {
-                pokemons[i].htmlCard.style.display = 'none';
+        for (let i = 0; i < allPokemons.length; i++) {
+            if (allPokemons[i].name.indexOf(e.target.value) == -1) {
+                allPokemons[i].htmlCard.style.display = 'none';
             } else {
-                pokemons[i].htmlCard.style.display = 'flex';
+                allPokemons[i].htmlCard.style.display = 'flex';
             }
         }
 
@@ -65,6 +74,8 @@ const makePagination = (next) => {
         page -= 1;
         offset -= 5;
     }
+    promisses = [];
+    createPromisses();
     clearScreen();
     fetchPokemon(page);
     paginationDiv.textContent = page;
@@ -81,7 +92,7 @@ const createHtmlStats = (stats) => {
     });
     return html
 }
-const createHtmlMoves = (pokemon, moves) => {
+const createHtmlCard = (pokemon, moves) => {
     let imageSrc = pokemon.sprites.other['official-artwork'].front_default,
         type = createTypeText(pokemon.types),
         html = '';
