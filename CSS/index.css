@@ -149,7 +149,7 @@ body{
     align-items: center;
     flex-direction: column;
 }
-#searchInput{
+#search_input{
     width: 100%;
     height: 3ch;
     border-radius: 1ch;
@@ -159,7 +159,10 @@ body{
     padding-left:30px;
 
 }
-
+#pokemon_logo{
+    margin: 1%;
+    width: 25%;
+}
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: white;
     opacity: 1; 
