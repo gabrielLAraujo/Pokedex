@@ -16,26 +16,42 @@ window.addEventListener('load', (event) => {
     initEvents()
 });
 
-const createPromisses = () => {
-    let i = offset > 0 ? offset : 1;
-    let pageCount = page == 1 ? page * 5 : page * 5 - 1
-    for (i; i < pageCount; i++) {
-        promisses.push(fetch(getUrl(i)).then(response => response.json()))
+const createPromisses = (multiple = true, pokemonName) => {
+    try {
+        let i = offset > 0 ? offset : 1;
+        let pageCount = page == 1 ? page * 5 : page * 5 - 1
+        if (multiple) {
+            for (i; i < pageCount; i++) {
+                promisses.push(fetch(getUrl(i)).then(response => response.json()))
+            }
+        } else {
+            promisses.push(fetch(getUrl(pokemonName)).then(response => response.json()))
+        }
+    } catch (err) {
+        console.log(err)
     }
+
+
 }
-const fetchPokemon = (page) => {
+const fetchPokemon = () => {
+    try {
+        Promise.all(promisses).then(pokemons => {
+            pokemons.forEach(pokemon => {
+                console.log(pokemon)
+                let moves = getFourRandomMoves(pokemon),
+                    html = createHtmlCard(pokemon, moves),
+                    cardDiv = createCardDiv(html, pokemon.types[0].type.name);
 
-    Promise.all(promisses).then(pokemons => {
-        pokemons.forEach(pokemon => {
-            let moves = getFourRandomMoves(pokemon),
-                html = createHtmlCard(pokemon, moves),
-                cardDiv = createCardDiv(html, pokemon.types[0].type.name);
 
-
-            pokemon['htmlCard'] = cardDiv;
-            allPokemons.push(pokemon);
+                pokemon['htmlCard'] = cardDiv;
+                if (allPokemons.indexOf(pokemon) == -1)
+                    allPokemons.push(pokemon);
+            })
         })
-    })
+    } catch (err) {
+        console.log(err)
+    }
+
 }
 
 const createCardDiv = (html, type) => {
@@ -46,16 +62,37 @@ const createCardDiv = (html, type) => {
     pokedex.append(cardDiv);
     return cardDiv;
 }
+const screenFilter = (text) => {
+    let foundPokemons = [];
+    for (let i = 0; i < allPokemons.length; i++) {
+        if (allPokemons[i].name.indexOf(text) == -1) {
+            allPokemons[i].htmlCard.style.display = 'none';
+        } else {
+            allPokemons[i].htmlCard.style.display = 'flex';
+            foundPokemons.push(allPokemons[i]);
+        }
+    }
+    return foundPokemons;
+
+}
 const initEvents = () => {
     searchInput.addEventListener('input', (e) => {
-        for (let i = 0; i < allPokemons.length; i++) {
-            if (allPokemons[i].name.indexOf(e.target.value) == -1) {
-                allPokemons[i].htmlCard.style.display = 'none';
-            } else {
-                allPokemons[i].htmlCard.style.display = 'flex';
-            }
+        console.log(e.target.value)
+        foundPokemons = screenFilter(e.target.value)
+        if (foundPokemons.length == 0) {
+            promisses = [];
+            createPromisses(false, e.target.value)
+            fetchPokemon();
+            paginationDiv.textContent = 1;
+            allPokemons.length = 4
         }
-
+        if (e.target.value == "") {
+            clearScreen();
+            page = 1;
+            paginationDiv.textContent = page;
+            createPromisses();
+            fetchPokemon(page)
+        }
     })
     nextPageBtn.addEventListener('click', (e) => {
         makePagination(true);
@@ -74,9 +111,9 @@ const makePagination = (next) => {
         page -= 1;
         offset -= 5;
     }
-    promisses = [];
-    createPromisses();
+
     clearScreen();
+    createPromisses();
     fetchPokemon(page);
     paginationDiv.textContent = page;
 }
@@ -120,6 +157,8 @@ const getFourRandomMoves = (pokemon) => {
     return moves;
 }
 const clearScreen = () => {
+    promisses = [];
+    allPokemons = [];
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         card.remove();
