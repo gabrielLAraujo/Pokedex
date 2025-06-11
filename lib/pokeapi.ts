@@ -9,8 +9,8 @@ export async function fetchPokemonList(limit = 151, offset = 0): Promise<Pokemon
   return data.results;
 }
 
-export async function fetchPokemonByName(name: string): Promise<PokemonDetail> {
-  const res = await fetch(`${BASE_URL}/pokemon/${name}`);
-  if (!res.ok) throw new Error(`Pokémon ${name} não encontrado`);
+export async function fetchPokemonById(id: number): Promise<PokemonDetail> {
+  const res = await fetch(`${BASE_URL}/pokemon/${id}`);
+  if (!res.ok) throw new Error(`Pokémon ${id} não encontrado`);
   return (await res.json()) as PokemonDetail;
 }
