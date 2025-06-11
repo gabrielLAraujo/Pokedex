@@ -1,11 +1,26 @@
-import PokemonCard from "@/components/PokemonCard";
 import PolemonList from "@/components/PolemonList";
-import { fetchPokemonList } from "@/lib/pokeapi";
-import Image from "next/image";
+import { fetchPokemonList, fetchPokemonById } from "@/lib/pokeapi";
+import type { PokemonBasic } from "@/interfaces/pokemon";
+
+// Função para extrair o id da URL
+function getIdFromUrl(url: string): number {
+  const match = url.match(/\/pokemon\/(\d+)\//);
+  return match ? Number(match[1]) : 0;
+}
 
 export default async function Home() {
-  const pokemons = await fetchPokemonList();
+  const pokemonBasics = await fetchPokemonList();
+
+  const pokemons = await Promise.all(
+    pokemonBasics.map(async (basic: PokemonBasic) => {
+      const id = getIdFromUrl(basic.url);
+      return await fetchPokemonById(id);
+    })
+  );
+
   return (
-    <PolemonList pokemons={pokemons} />
+    <main className="min-h-screen">
+      <PolemonList pokemons={pokemons} />
+    </main>
   );
 }
