@@ -2,8 +2,29 @@ import { fetchPokemonById } from "@/lib/pokeapi";
 import { getTypeColor } from "@/lib/utils";
 import Image from "next/image";
 
+type PokemonType = {
+  type: { name: string };
+};
+
+type PokemonStat = {
+  stat: { name: string };
+  base_stat: number;
+};
+
+type PokemonAbility = {
+  ability: { name: string };
+};
+
+type Pokemon = {
+  id: number;
+  name: string;
+  types: PokemonType[];
+  stats?: PokemonStat[];
+  abilities?: PokemonAbility[];
+};
+
 export default async function PokemonPage({ params }: { params: { id: string } }) {
-    const pokemon = await fetchPokemonById(Number(params.id));
+    const pokemon: Pokemon | null = await fetchPokemonById(Number(params.id));
 
     if (!pokemon) {
         return (
@@ -13,7 +34,7 @@ export default async function PokemonPage({ params }: { params: { id: string } }
         );
     }
 
-    const types = pokemon.types?.map((t: any) => t.type.name) || ["normal"];
+    const types = pokemon.types?.map((t) => t.type.name) || ["normal"];
     const gradientBg =
         types.length > 1
             ? `bg-gradient-to-br from-[var(--${types[0]})] to-[var(--${types[1]})]`
@@ -36,7 +57,7 @@ export default async function PokemonPage({ params }: { params: { id: string } }
                     className="mb-4 drop-shadow-lg bg-white rounded-full"
                 />
                 <div className="flex gap-3 mb-4">
-                    {pokemon.types.map((typeObj: any) => (
+                    {pokemon.types.map((typeObj) => (
                         <span
                             key={typeObj.type.name}
                             className={`px-3 py-1 rounded-full text-sm font-bold capitalize text-white shadow ${getTypeColor(typeObj.type.name)}`}
@@ -48,22 +69,22 @@ export default async function PokemonPage({ params }: { params: { id: string } }
                 <div className="w-full">
                     <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">Base Stats</h2>
                     <ul>
-                        {/* {pokemon.stats.map((stat: any) => (
+                        {pokemon.stats?.map((stat) => (
                             <li key={stat.stat.name} className="flex justify-between mb-1 text-gray-700 dark:text-gray-200">
                                 <span className="capitalize">{stat.stat.name.replace("-", " ")}:</span>
                                 <span className="font-semibold">{stat.base_stat}</span>
                             </li>
-                        ))} */}
+                        ))}
                     </ul>
                 </div>
                 <div className="w-full mt-6">
                     <h2 className="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">Abilities</h2>
                     <ul className="flex flex-wrap gap-2">
-                        {/* {pokemon.abilities.map((a: any) => (
+                        {pokemon.abilities?.map((a) => (
                             <li key={a.ability.name} className="bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-full text-sm capitalize">
                                 {a.ability.name}
                             </li>
-                        ))} */}
+                        ))}
                     </ul>
                 </div>
             </div>

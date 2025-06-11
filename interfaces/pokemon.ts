@@ -1,4 +1,5 @@
 export interface PokemonBasic {
+  id: number;
   name: string;
   url: string;
 }
@@ -29,3 +30,24 @@ export interface PokemonDetail {
   sprites: PokemonSprite;
   types: PokemonType[];
 }
+// export type PokemonType = {
+//   type: { name: string };
+// };
+
+export type PokemonStat = {
+  stat: { name: string };
+  base_stat: number;
+};
+
+export type PokemonAbility = {
+  ability: { name: string };
+};
+
+export type Pokemon = {
+  id: number;
+  name: string;
+  types: PokemonType[];
+  stats?: PokemonStat[];
+  abilities?: PokemonAbility[];
+  url?: string;
+};
