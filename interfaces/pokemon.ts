@@ -24,24 +24,26 @@ export interface PokemonSprite {
     };
   };
 }
+
+export interface PokemonStat {
+  stat: { name: string; url: string };
+  base_stat: number;
+}
+
+export interface PokemonAbility {
+  ability: { name: string; url: string };
+}
+
 export interface PokemonDetail {
   id: number;
   name: string;
   sprites: PokemonSprite;
   types: PokemonType[];
+  stats: PokemonStat[];
+  abilities: PokemonAbility[];
+  height: number;
+  weight: number;
 }
-// export type PokemonType = {
-//   type: { name: string };
-// };
-
-export type PokemonStat = {
-  stat: { name: string };
-  base_stat: number;
-};
-
-export type PokemonAbility = {
-  ability: { name: string };
-};
 
 export type Pokemon = {
   id: number;
@@ -49,5 +51,6 @@ export type Pokemon = {
   types: PokemonType[];
   stats?: PokemonStat[];
   abilities?: PokemonAbility[];
+  sprites?: PokemonSprite;
   url?: string;
 };
